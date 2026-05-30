@@ -63,6 +63,12 @@ body{min-height:100vh;}
 .hl-layer{pointer-events:none;touch-action:auto;}
 body.hl-mode .hl-layer{pointer-events:auto;touch-action:none;cursor:crosshair;}
 .hl-rect{pointer-events:auto;}
+.bm-btn{display:none !important;}
+.bm-cur-btn{position:fixed;bottom:calc(20px + env(safe-area-inset-bottom));left:50%;transform:translateX(calc(-100% - 50px));z-index:1001;width:38px;height:38px;border-radius:50%;background:rgba(0,0,0,0.75);color:#fff;border:none;font-size:1.1em;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.4);}
+.bm-cur-btn.on{background:#c8a96e;}
+.hl-toggle{position:fixed !important;bottom:calc(20px + env(safe-area-inset-bottom)) !important;left:50% !important;transform:translateX(50px) !important;right:auto !important;top:auto !important;width:38px !important;height:38px !important;font-size:1em !important;background:rgba(0,0,0,0.75) !important;color:#fff !important;}
+.hl-toggle.on{background:#ffeb3b !important;color:#333 !important;box-shadow:0 0 0 3px #c8a96e !important;}
+@media(min-width:769px){.bm-cur-btn{bottom:18px;}.hl-toggle{bottom:18px !important;}}
 </style>
 </head>
 <body>
@@ -698,14 +704,19 @@ body.hl-mode .hl-layer{pointer-events:auto;touch-action:none;cursor:crosshair;}
     getHL(n).forEach(r=>addRect(ly,r,n));
     new IntersectionObserver(es=>es.forEach(e=>ly.style.display=e.isIntersecting?'block':'none'),{threshold:0.01}).observe(pg);
     let sx=0,sy=0,dr=false,tmp=null;
-    const pt=e=>{const r=ly.getBoundingClientRect();const p=e.touches?e.touches[0]:e;return{x:(p.clientX-r.left)/r.width,y:(p.clientY-r.top)/r.height};};
+    const pt=e=>{const r=ly.getBoundingClientRect();const t=(e.touches&&e.touches.length)?e.touches[0]:((e.changedTouches&&e.changedTouches.length)?e.changedTouches[0]:e);return{x:(t.clientX-r.left)/r.width,y:(t.clientY-r.top)/r.height};};
     const st=e=>{if(!hlMode||e.target.classList.contains('hl-rect'))return;e.preventDefault();const p=pt(e);sx=p.x;sy=p.y;dr=true;tmp=document.createElement('div');tmp.className='hl-rect';ly.appendChild(tmp);};
     const mv=e=>{if(!dr)return;e.preventDefault();const p=pt(e);const x=Math.min(sx,p.x),y=Math.min(sy,p.y),w=Math.abs(p.x-sx),h=Math.abs(p.y-sy);Object.assign(tmp.style,{left:x*100+'%',top:y*100+'%',width:w*100+'%',height:h*100+'%'});};
-    const ed=e=>{if(!dr)return;dr=false;const p=pt(e.changedTouches?{clientX:e.changedTouches[0].clientX,clientY:e.changedTouches[0].clientY,touches:[]}:e);const x=Math.min(sx,p.x),y=Math.min(sy,p.y),w=Math.abs(p.x-sx),h=Math.abs(p.y-sy);if(w<0.02||h<0.01){tmp.remove();return;}const r={x,y,w,h};attachDel(tmp,r,n);const a=getHL(n);a.push(r);setHL(n,a);};
+    const ed=e=>{if(!dr)return;dr=false;const p=pt(e);const x=Math.min(sx,p.x),y=Math.min(sy,p.y),w=Math.abs(p.x-sx),h=Math.abs(p.y-sy);if(w<0.02||h<0.01){tmp.remove();return;}const r={x,y,w,h};attachDel(tmp,r,n);const a=getHL(n);a.push(r);setHL(n,a);};
     ly.addEventListener('mousedown',st);ly.addEventListener('mousemove',mv);ly.addEventListener('mouseup',ed);
     ly.addEventListener('touchstart',st,{passive:false});ly.addEventListener('touchmove',mv,{passive:false});ly.addEventListener('touchend',ed);});
   function addRect(ly,r,n){const d=document.createElement('div');d.className='hl-rect';Object.assign(d.style,{left:r.x*100+'%',top:r.y*100+'%',width:r.w*100+'%',height:r.h*100+'%'});attachDel(d,r,n);ly.appendChild(d);}
   function attachDel(el,r,n){el.addEventListener('click',()=>{if(!confirm('このハイライトを削除しますか？'))return;setHL(n,getHL(n).filter(x=>!(x.x===r.x&&x.y===r.y&&x.w===r.w&&x.h===r.h)));el.remove();});}
+const curBmBtn=document.createElement('button');curBmBtn.className='bm-cur-btn';curBmBtn.setAttribute('aria-label','現在ページをしおり');document.body.appendChild(curBmBtn);let curN=1;
+function updCur(){const on=isBM(curN);curBmBtn.textContent=on?'★':'☆';curBmBtn.classList.toggle('on',on);}
+curBmBtn.addEventListener('click',e=>{e.stopPropagation();toggleBM(curN);updCur();});
+pages.forEach(p=>new IntersectionObserver(es=>{let b=null,r=0;es.forEach(e=>{if(e.isIntersecting&&e.intersectionRatio>r){r=e.intersectionRatio;b=e.target;}});if(b){const i=pages.indexOf(b);if(i>=0){curN=i+1;updCur();}}},{threshold:[0.3,0.6]}).observe(p));
+updCur();
 })();
 </script>
 </body>
