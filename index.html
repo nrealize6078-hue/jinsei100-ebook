@@ -572,7 +572,10 @@ body{min-height:100vh;}
   function gotoPage(idx){
     if(idx < 0) idx = 0;
     if(idx >= total) idx = total - 1;
-    pages[idx].scrollIntoView({behavior:'smooth', block:'start'});
+    const rect = pages[idx].getBoundingClientRect();
+    const offsetTop = window.scrollY + rect.top - (window.innerWidth < 769 ? 50 : 10);
+    window.scrollTo({top: offsetTop, behavior:'smooth'});
+    history.replaceState(null, '', '#p' + (idx + 1));
   }
   prevBtn.onclick = () => gotoPage(current - 1);
   nextBtn.onclick = () => gotoPage(current + 1);
@@ -597,9 +600,9 @@ body{min-height:100vh;}
             else item.classList.remove('active');
           });
           if(activeItem && tocBar && window.innerWidth < 769){
-            const r = activeItem.getBoundingClientRect();
-            const br = tocBar.getBoundingClientRect();
-            if(r.left < br.left || r.right > br.right){ activeItem.scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'}); }
+            // Only scroll TOC bar horizontally - avoid affecting page scroll
+            const target = activeItem.offsetLeft - tocBar.clientWidth/2 + activeItem.clientWidth/2;
+            tocBar.scrollTo({left: target, behavior:'smooth'});
           }
         }
       }
