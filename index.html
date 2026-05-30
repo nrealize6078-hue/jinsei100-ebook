@@ -562,59 +562,86 @@ body{min-height:100vh;}
 <div class="page-indicator" id="pageInd">1 / 488</div>
 <script>(function(){
   const pages = Array.from(document.querySelectorAll('.page'));
-  const tocItems = document.querySelectorAll('.toc-item');
+  const tocItems = Array.from(document.querySelectorAll('.toc-item'));
   const tocBar = document.getElementById('tocBar');
   const indicator = document.getElementById('pageInd');
   const prevBtn = document.getElementById('prevBtn');
   const nextBtn = document.getElementById('nextBtn');
   const total = pages.length;
   let current = 0;
+  let suppressUntil = 0;
+
+  function updateActive(idx){
+    current = idx;
+    indicator.textContent = (idx+1) + ' / ' + total;
+    prevBtn.disabled = (idx === 0);
+    nextBtn.disabled = (idx === total - 1);
+    const p = idx + 1;
+    let activeItem = null;
+    tocItems.forEach((item) => {
+      const s = parseInt(item.dataset.start);
+      const ed = parseInt(item.dataset.end);
+      if(p >= s && p <= ed){ item.classList.add('active'); if(!activeItem) activeItem = item; }
+      else item.classList.remove('active');
+    });
+    if(activeItem && tocBar && window.innerWidth < 769){
+      const target = activeItem.offsetLeft - tocBar.clientWidth/2 + activeItem.clientWidth/2;
+      tocBar.scrollTo({left: Math.max(0, target), behavior:'smooth'});
+    }
+  }
+
   function gotoPage(idx){
     if(idx < 0) idx = 0;
     if(idx >= total) idx = total - 1;
-    const rect = pages[idx].getBoundingClientRect();
-    const offsetTop = window.scrollY + rect.top - (window.innerWidth < 769 ? 50 : 10);
-    window.scrollTo({top: offsetTop, behavior:'smooth'});
+    suppressUntil = Date.now() + 800;
+    const el = pages[idx];
+    const headerOffset = window.innerWidth < 769 ? 50 : 10;
+    const top = el.getBoundingClientRect().top + window.scrollY - headerOffset;
+    window.scrollTo({top: top, behavior:'auto'});
+    updateActive(idx);
     history.replaceState(null, '', '#p' + (idx + 1));
   }
-  prevBtn.onclick = () => gotoPage(current - 1);
-  nextBtn.onclick = () => gotoPage(current + 1);
+
+  prevBtn.addEventListener('click', (e) => { e.preventDefault(); gotoPage(current - 1); });
+  nextBtn.addEventListener('click', (e) => { e.preventDefault(); gotoPage(current + 1); });
+
   tocItems.forEach(item => {
-    item.addEventListener('click', (e) => { e.preventDefault(); gotoPage(parseInt(item.dataset.start) - 1); });
+    item.addEventListener('click', (e) => {
+      e.preventDefault();
+      const start = parseInt(item.dataset.start) - 1;
+      gotoPage(start);
+    });
   });
+
   const io = new IntersectionObserver((entries) => {
+    if(Date.now() < suppressUntil) return;
+    let mostVisible = null;
+    let bestRatio = 0;
     entries.forEach(e => {
-      if(e.isIntersecting){
-        const idx = pages.indexOf(e.target);
-        if(idx >= 0){
-          current = idx;
-          indicator.textContent = (idx+1) + ' / ' + total;
-          prevBtn.disabled = (idx === 0);
-          nextBtn.disabled = (idx === total - 1);
-          const p = idx + 1;
-          let activeItem = null;
-          tocItems.forEach((item) => {
-            const s = parseInt(item.dataset.start);
-            const ed = parseInt(item.dataset.end);
-            if(p >= s && p <= ed){ item.classList.add('active'); if(!activeItem) activeItem = item; }
-            else item.classList.remove('active');
-          });
-          if(activeItem && tocBar && window.innerWidth < 769){
-            // Only scroll TOC bar horizontally - avoid affecting page scroll
-            const target = activeItem.offsetLeft - tocBar.clientWidth/2 + activeItem.clientWidth/2;
-            tocBar.scrollTo({left: target, behavior:'smooth'});
-          }
-        }
+      if(e.isIntersecting && e.intersectionRatio > bestRatio){
+        bestRatio = e.intersectionRatio;
+        mostVisible = e.target;
       }
     });
-  }, {threshold: 0.35});
+    if(mostVisible){
+      const idx = pages.indexOf(mostVisible);
+      if(idx >= 0 && idx !== current) updateActive(idx);
+    }
+  }, {threshold: [0.25, 0.5, 0.75]});
   pages.forEach(p => io.observe(p));
+
   document.addEventListener('keydown', (e) => {
     if(e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp'){ e.preventDefault(); gotoPage(current - 1); }
     if(e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' '){ e.preventDefault(); gotoPage(current + 1); }
     if(e.key === 'Home'){ e.preventDefault(); gotoPage(0); }
     if(e.key === 'End'){ e.preventDefault(); gotoPage(total - 1); }
   });
+
+  const m = location.hash.match(/^#p([0-9]+)$/);
+  if(m){
+    const t = parseInt(m[1]) - 1;
+    if(t >= 0 && t < total){ setTimeout(function(){ gotoPage(t); }, 80); }
+  }
 })();</script>
 </body>
 </html>
