@@ -38,7 +38,28 @@ body{min-height:100vh;}
 .nav-up:active,.nav-down:active{transform:scale(0.94);}
 .nav-up:disabled,.nav-down:disabled{opacity:0.4;cursor:not-allowed;}
 .page-indicator{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(28px + env(safe-area-inset-bottom));background:rgba(0,0,0,0.7);color:#fff;padding:7px 14px;border-radius:24px;font-size:0.82em;box-shadow:0 3px 10px rgba(0,0,0,0.5);z-index:1000;pointer-events:none;}
-@media(min-width:769px){.nav-up{top:18px;right:24px;}.nav-down{bottom:18px;right:24px;}.page-indicator{left:auto;right:24px;bottom:80px;transform:none;}}</style>
+@media(min-width:769px){.nav-up{top:18px;right:24px;}.nav-down{bottom:18px;right:24px;}.page-indicator{left:auto;right:24px;bottom:80px;transform:none;}}/* しおりボタン */
+.bm-btn{position:absolute;top:6px;right:6px;z-index:5;width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,0.55);color:#fff;border:none;font-size:1.1em;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.bm-btn.on{background:#c8a96e;color:#fff;}
+.hl-layer{position:absolute;inset:0;z-index:3;cursor:crosshair;touch-action:none;}
+.hl-rect{position:absolute;background:rgba(255,235,59,0.42);border:1px solid rgba(200,170,0,.6);pointer-events:auto;cursor:pointer;border-radius:2px;}
+.hl-rect:hover{background:rgba(255,235,59,0.65);}
+.hl-toggle{position:fixed;right:14px;bottom:calc(84px + env(safe-area-inset-bottom));z-index:1000;width:48px;height:48px;border-radius:50%;background:rgba(255,235,59,0.95);color:#333;border:none;font-size:1.1em;cursor:pointer;box-shadow:0 3px 12px rgba(0,0,0,.5);}
+.hl-toggle.on{box-shadow:0 0 0 3px #c8a96e, 0 3px 12px rgba(0,0,0,.5);}
+@media(min-width:769px){.hl-toggle{right:88px;bottom:18px;}}
+.bm-panel-btn{position:fixed;right:14px;bottom:calc(146px + env(safe-area-inset-bottom));z-index:1000;width:48px;height:48px;border-radius:50%;background:rgba(200,169,110,0.95);color:#fff;border:none;font-size:1.1em;cursor:pointer;box-shadow:0 3px 12px rgba(0,0,0,.5);}
+@media(min-width:769px){.bm-panel-btn{right:152px;bottom:18px;}}
+.bm-panel{position:fixed;top:0;right:-320px;width:300px;height:100%;background:#1c1c1c;color:#eee;z-index:2000;box-shadow:-4px 0 18px rgba(0,0,0,.6);transition:right .25s;overflow-y:auto;}
+.bm-panel.open{right:0;}
+.bm-panel h3{padding:18px;font-size:1em;color:#c8a96e;border-bottom:1px solid #333;display:flex;justify-content:space-between;align-items:center;}
+.bm-panel .bm-close{background:none;border:none;color:#888;font-size:1.4em;cursor:pointer;}
+.bm-panel .bm-item{display:flex;justify-content:space-between;align-items:center;padding:10px 18px;border-bottom:1px solid #2a2a2a;cursor:pointer;}
+.bm-panel .bm-item:hover{background:#262626;}
+.bm-panel .bm-del{background:none;border:none;color:#777;font-size:1em;cursor:pointer;padding:4px 8px;}
+.bm-panel .bm-empty{padding:18px;color:#777;font-size:.9em;text-align:center;}
+.bm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:1999;display:none;}
+.bm-overlay.show{display:block;}
+</style>
 </head>
 <body>
 <nav class="toc-bar" id="tocBar"><a href="#p1" class="toc-item active" data-start="1" data-end="1">表紙</a>
@@ -641,5 +662,47 @@ body{min-height:100vh;}
     if(t >= 0 && t < total){ setTimeout(function(){ gotoPage(t); }, 80); }
   }
 })();</script>
+<div class="bm-overlay" id="bmOverlay"></div>
+<aside class="bm-panel" id="bmPanel">
+  <h3>📑 しおり一覧 <button class="bm-close" id="bmClose">×</button></h3>
+  <div id="bmList"></div>
+</aside>
+<button class="bm-panel-btn" id="bmPanelBtn" aria-label="しおり一覧">📑</button>
+<button class="hl-toggle" id="hlToggle" aria-label="ハイライトモード">✏️</button>
+<script>
+(function(){
+  const NS='jinsei100-ebook';
+  const store={get(k,fb){try{return JSON.parse(localStorage.getItem(NS+':'+k))??fb;}catch(e){return fb;}},set(k,v){try{localStorage.setItem(NS+':'+k,JSON.stringify(v));}catch(e){}}};
+  const pages=Array.from(document.querySelectorAll('.page')); const total=pages.length;
+  if(!location.hash){const last=store.get('last',null); if(last&&last>=1&&last<=total){setTimeout(()=>pages[last-1].scrollIntoView({behavior:'auto',block:'start'}),120);}}
+  new IntersectionObserver((es)=>{let b=null,r=0;es.forEach(e=>{if(e.isIntersecting&&e.intersectionRatio>r){r=e.intersectionRatio;b=e.target;}});if(b){const i=pages.indexOf(b);if(i>=0)store.set('last',i+1);}},{threshold:[0.4]}).observe; pages.forEach(p=>new IntersectionObserver((es)=>{let b=null,r=0;es.forEach(e=>{if(e.isIntersecting&&e.intersectionRatio>r){r=e.intersectionRatio;b=e.target;}});if(b){const i=pages.indexOf(b);if(i>=0)store.set('last',i+1);}},{threshold:[0.4]}).observe(p));
+  const getBM=()=>store.get('bookmarks',[]);const setBM=a=>store.set('bookmarks',a.sort((x,y)=>x-y));const isBM=n=>getBM().includes(n);
+  function toggleBM(n){const a=getBM();const i=a.indexOf(n);if(i>=0)a.splice(i,1);else a.push(n);setBM(a);refreshBtns();renderList();}
+  function refreshBtns(){document.querySelectorAll('.bm-btn').forEach(b=>{const n=+b.dataset.page;b.classList.toggle('on',isBM(n));b.textContent=isBM(n)?'★':'☆';});}
+  pages.forEach((pg,i)=>{const n=i+1;const b=document.createElement('button');b.className='bm-btn';b.dataset.page=n;b.textContent=isBM(n)?'★':'☆';if(isBM(n))b.classList.add('on');b.addEventListener('click',e=>{e.stopPropagation();toggleBM(n);});pg.appendChild(b);});
+  const panel=document.getElementById('bmPanel'),ov=document.getElementById('bmOverlay'),list=document.getElementById('bmList');
+  const open=()=>{panel.classList.add('open');ov.classList.add('show');renderList();};
+  const close=()=>{panel.classList.remove('open');ov.classList.remove('show');};
+  document.getElementById('bmPanelBtn').addEventListener('click',open);document.getElementById('bmClose').addEventListener('click',close);ov.addEventListener('click',close);
+  function renderList(){const a=getBM();if(!a.length){list.innerHTML='<div class="bm-empty">しおりはまだありません。<br>各ページの☆を押すと追加できます。</div>';return;}
+    list.innerHTML=a.map(n=>`<div class="bm-item" data-page="${n}"><span>📖 ${n} ページ目</span><button class="bm-del" data-del="${n}">✕</button></div>`).join('');
+    list.querySelectorAll('.bm-item').forEach(el=>el.addEventListener('click',e=>{if(e.target.classList.contains('bm-del')){toggleBM(+e.target.dataset.del);}else{const n=+el.dataset.page;pages[n-1].scrollIntoView({behavior:'smooth',block:'start'});history.replaceState(null,'','#p'+n);close();}}));}
+  const getHL=n=>store.get('hl:'+n,[]);const setHL=(n,a)=>store.set('hl:'+n,a);
+  let hlMode=false;const ht=document.getElementById('hlToggle');
+  ht.addEventListener('click',()=>{hlMode=!hlMode;ht.classList.toggle('on',hlMode);});
+  pages.forEach((pg,i)=>{const n=i+1;const ly=document.createElement('div');ly.className='hl-layer';ly.style.display='none';ly.dataset.page=n;pg.appendChild(ly);
+    getHL(n).forEach(r=>addRect(ly,r,n));
+    new IntersectionObserver(es=>es.forEach(e=>ly.style.display=e.isIntersecting?'block':'none'),{threshold:0.01}).observe(pg);
+    let sx=0,sy=0,dr=false,tmp=null;
+    const pt=e=>{const r=ly.getBoundingClientRect();const p=e.touches?e.touches[0]:e;return{x:(p.clientX-r.left)/r.width,y:(p.clientY-r.top)/r.height};};
+    const st=e=>{if(!hlMode||e.target.classList.contains('hl-rect'))return;e.preventDefault();const p=pt(e);sx=p.x;sy=p.y;dr=true;tmp=document.createElement('div');tmp.className='hl-rect';ly.appendChild(tmp);};
+    const mv=e=>{if(!dr)return;e.preventDefault();const p=pt(e);const x=Math.min(sx,p.x),y=Math.min(sy,p.y),w=Math.abs(p.x-sx),h=Math.abs(p.y-sy);Object.assign(tmp.style,{left:x*100+'%',top:y*100+'%',width:w*100+'%',height:h*100+'%'});};
+    const ed=e=>{if(!dr)return;dr=false;const p=pt(e.changedTouches?{clientX:e.changedTouches[0].clientX,clientY:e.changedTouches[0].clientY,touches:[]}:e);const x=Math.min(sx,p.x),y=Math.min(sy,p.y),w=Math.abs(p.x-sx),h=Math.abs(p.y-sy);if(w<0.02||h<0.01){tmp.remove();return;}const r={x,y,w,h};attachDel(tmp,r,n);const a=getHL(n);a.push(r);setHL(n,a);};
+    ly.addEventListener('mousedown',st);ly.addEventListener('mousemove',mv);ly.addEventListener('mouseup',ed);
+    ly.addEventListener('touchstart',st,{passive:false});ly.addEventListener('touchmove',mv,{passive:false});ly.addEventListener('touchend',ed);});
+  function addRect(ly,r,n){const d=document.createElement('div');d.className='hl-rect';Object.assign(d.style,{left:r.x*100+'%',top:r.y*100+'%',width:r.w*100+'%',height:r.h*100+'%'});attachDel(d,r,n);ly.appendChild(d);}
+  function attachDel(el,r,n){el.addEventListener('click',()=>{if(!confirm('このハイライトを削除しますか？'))return;setHL(n,getHL(n).filter(x=>!(x.x===r.x&&x.y===r.y&&x.w===r.w&&x.h===r.h)));el.remove();});}
+})();
+</script>
 </body>
 </html>
