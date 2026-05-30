@@ -69,6 +69,8 @@ body.hl-mode .hl-layer{pointer-events:auto;touch-action:none;cursor:crosshair;}
 .hl-toggle{position:fixed !important;bottom:calc(20px + env(safe-area-inset-bottom)) !important;left:50% !important;transform:translateX(50px) !important;right:auto !important;top:auto !important;width:38px !important;height:38px !important;font-size:1em !important;background:rgba(0,0,0,0.75) !important;color:#fff !important;}
 .hl-toggle.on{background:#ffeb3b !important;color:#333 !important;box-shadow:0 0 0 3px #c8a96e !important;}
 @media(min-width:769px){.bm-cur-btn{bottom:18px;}.hl-toggle{bottom:18px !important;}}
+.bm-panel-btn{top:calc(56px + env(safe-area-inset-top)) !important;left:14px !important;right:auto !important;bottom:auto !important;}
+@media(min-width:769px){.bm-panel-btn{top:14px !important;left:234px !important;right:auto !important;bottom:auto !important;}}
 </style>
 </head>
 <body>
@@ -699,7 +701,7 @@ body.hl-mode .hl-layer{pointer-events:auto;touch-action:none;cursor:crosshair;}
     list.querySelectorAll('.bm-item').forEach(el=>el.addEventListener('click',e=>{if(e.target.classList.contains('bm-del')){toggleBM(+e.target.dataset.del);}else{const n=+el.dataset.page;pages[n-1].scrollIntoView({behavior:'smooth',block:'start'});history.replaceState(null,'','#p'+n);close();}}));}
   const getHL=n=>store.get('hl:'+n,[]);const setHL=(n,a)=>store.set('hl:'+n,a);
   let hlMode=false;const ht=document.getElementById('hlToggle');
-  ht.addEventListener('click',()=>{hlMode=!hlMode;ht.classList.toggle('on',hlMode);});
+  ht.addEventListener('click',()=>{hlMode=!hlMode;ht.classList.toggle('on',hlMode);document.body.classList.toggle('hl-mode',hlMode);});
   pages.forEach((pg,i)=>{const n=i+1;const ly=document.createElement('div');ly.className='hl-layer';ly.style.display='none';ly.dataset.page=n;pg.appendChild(ly);
     getHL(n).forEach(r=>addRect(ly,r,n));
     new IntersectionObserver(es=>es.forEach(e=>ly.style.display=e.isIntersecting?'block':'none'),{threshold:0.01}).observe(pg);
