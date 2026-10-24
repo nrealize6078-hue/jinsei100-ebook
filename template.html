@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="ja"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="format-detection" content="telephone=no">
+<meta name="description" content="漠然とした不安が、確かな希望に変わる。人生6大項目を構造として捉え、自分自身の判断軸をつくるための教科書。大橋孝行 著。">
+<meta name="theme-color" content="#0b1f4b">
+<meta property="og:type" content="book">
+<meta property="og:title" content="人生100年時代の教科書">
+<meta property="og:description" content="漠然とした不安が、確かな希望に変わる。大橋孝行 著。">
+<title>人生100年時代の教科書｜大橋孝行</title>
+<style>
+:root{
+  --navy:#0b1f4b; --navy-2:#071634; --gold:#c9a227; --gold-l:#ddc063; --gold-d:#8a6d14;
+  --ink:#2a2f3a; --muted:#5b6270; --mist:#f5f7fa; --line:#e6e9ef; --soft:#fbf6e6;
+  --barh:56px; --safeT:env(safe-area-inset-top,0px); --safeB:env(safe-area-inset-bottom,0px);
+  --bar:calc(var(--barh) + var(--safeT));
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;padding-top:var(--bar);background:#e9edf2;color:var(--ink);line-height:1.2;
+  font-family:"Noto Sans JP","Noto Sans CJK JP","Hiragino Kaku Gothic ProN","Yu Gothic",
+    "Meiryo",system-ui,sans-serif;
+  overflow-wrap:anywhere;line-break:strict}
+
+/* ============ 上部固定バー ============ */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:60;height:var(--bar);
+  padding:var(--safeT) max(14px,3vw) 0;background:var(--navy);color:#fff;
+  display:flex;align-items:center;gap:12px;box-shadow:0 2px 14px #0b1f4b40}
+.topbar .home{color:var(--gold-l);font-weight:700;font-size:.7rem;letter-spacing:.14em;
+  text-decoration:none;white-space:nowrap;flex:none}
+.topbar .now{flex:1;min-width:0;color:#c7d0dd;font-size:.76rem;line-height:1.35;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:right}
+.topbar .now b{color:var(--gold-l);font-weight:700;margin-right:.5em}
+.tocbtn{flex:none;display:flex;align-items:center;gap:7px;height:38px;padding:0 15px;
+  border:1px solid #ddc06366;border-radius:19px;background:transparent;color:var(--gold-l);
+  font:700 .8rem/1 inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.tocbtn:hover{background:#ffffff12;border-color:var(--gold-l)}
+.tocbtn .bars{font-size:1rem;line-height:1}
+.prog{position:absolute;left:0;bottom:0;height:3px;width:0;background:var(--gold);
+  transition:width .12s linear}
+
+/* ============ 表紙 ============ */
+.cover{min-height:calc(100svh - var(--bar));background:#e9edf2;position:relative;
+  display:flex;align-items:center;justify-content:center;
+  padding:18px max(14px,3vw) 52px;overflow:hidden}
+.coverart{display:block;width:auto;height:auto;
+  max-width:min(100%,600px);
+  max-height:calc(100svh - var(--bar) - 74px);
+  object-fit:contain;box-shadow:0 16px 48px #0b1f4b2e}
+.cover .scroll{position:absolute;left:0;right:0;bottom:max(14px,var(--safeB));
+  text-align:center;color:#5f7089;font-size:.66rem;letter-spacing:.26em;margin:0}
+.printbtn{position:absolute;z-index:3;right:max(14px,3vw);top:14px;
+  border:1px solid #0b1f4b3d;background:#ffffffd6;color:var(--navy);padding:10px 14px;
+  font:700 .64rem/1 inherit;letter-spacing:.12em;cursor:pointer;
+  -webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.printbtn:hover{background:#fff;border-color:var(--navy)}
+
+/* ============ レイアウト ============ */
+.layout{max-width:1280px;margin:auto;display:grid;grid-template-columns:272px minmax(0,1fr);
+  gap:52px;padding:64px 32px 110px}
+main{background:#fff;padding:16px 68px 74px;box-shadow:0 12px 45px #0b1f4b12}
+
+/* ============ 目次 ============ */
+nav.side{position:sticky;top:calc(var(--bar) + 22px);align-self:start;background:#fff;
+  padding:22px 18px;border-top:5px solid var(--gold);box-shadow:0 8px 30px #0b1f4b14;
+  max-height:calc(100svh - var(--bar) - 44px);overflow-y:auto}
+nav.side h2{margin:0 0 12px;font-size:.7rem;letter-spacing:.24em;color:var(--gold-d);
+  border:0;padding:0}
+.toc a{display:grid;grid-template-columns:28px 1fr;gap:10px;text-decoration:none;color:var(--ink);
+  padding:10px 4px;border-bottom:1px solid var(--line);align-items:start;
+  -webkit-tap-highlight-color:#0b1f4b14}
+.toc a:last-child{border-bottom:0}
+.toc .n{color:var(--gold-d);font-weight:700;font-size:.72rem;line-height:1.5;padding-top:.12em}
+.toc .t{font-size:.79rem;line-height:1.5;font-weight:700;color:var(--navy)}
+.toc .e{display:block;color:var(--muted);font-size:.62rem;font-weight:400;
+  letter-spacing:.09em;margin-top:2px}
+.toc a[aria-current="true"]{background:var(--soft)}
+.toc a[aria-current="true"] .t{color:var(--gold-d)}
+.toc .grp{display:block;margin:18px 0 4px;padding:0 4px 6px;border-bottom:2px solid var(--navy);
+  color:var(--navy);font-size:.66rem;font-weight:700;letter-spacing:.16em;line-height:1.6}
+.toc .grp:first-child{margin-top:2px}
+
+/* ============ 部扉 ============ */
+.part{padding:46px 0 8px;border-bottom:0}
+.partbox{background:var(--navy);color:#fff;padding:clamp(26px,4vw,40px) clamp(20px,4vw,38px);
+  border-left:7px solid var(--gold)}
+.partbox .n{margin:0;color:var(--gold-l);font-size:.72rem;font-weight:700;letter-spacing:.28em}
+.partbox .t{margin:.6em 0 0;font-size:clamp(1.2rem,3.2vw,1.7rem);font-weight:700;line-height:1.45}
+.partbox .l{margin:.85em 0 0;color:#c3cede;font-size:.85rem;line-height:1.8}
+
+/* ============ 本文 ============ */
+section{padding:54px 0 42px;border-bottom:1px solid var(--line);
+  scroll-margin-top:calc(var(--bar) + 10px)}
+section:last-of-type{border-bottom:0}
+.eyebrow{color:var(--gold-d);font-size:.74rem;font-weight:700;letter-spacing:.14em;margin:0 0 10px}
+h1{color:var(--navy);font-size:clamp(1.42rem,3vw,2.3rem);line-height:1.38;margin:0 0 26px;
+  padding-bottom:15px;border-bottom:3px solid var(--navy);font-weight:700}
+p{margin:0}
+
+/* ---- ➀〜➄ の節 ---- */
+.grp{margin:26px 0 0}
+.glabel{display:inline-block;margin:0 0 14px;padding:5px 13px;
+  background:var(--navy);color:var(--gold-l);
+  font-size:.68rem;font-weight:700;letter-spacing:.2em}
+
+
+/* ---- 本文の1行 ---- */
+.say{margin:0 0 .9em;color:var(--ink);font-size:1rem;line-height:1.3;text-align:justify}
+.say .em{color:var(--navy);font-weight:700}
+.say:last-child{margin-bottom:0}
+
+/* ---- 【少し間】などの進行指示 ---- */
+.cue{margin:.9em 0;text-align:center}
+.cue span{display:inline-block;color:var(--gold-d);background:var(--soft);
+  border:1px solid #c9a22740;padding:.28em 1em;
+  font-size:.78rem;font-weight:700;letter-spacing:.1em;line-height:1.2}
+
+/* ---- 小見出し（原本31.7pt）。続くときは1本の罫線でまとめて受ける ---- */
+.subs{margin:1.1em 0 .7em;padding-left:.75em;border-left:2px solid var(--gold)}
+.subs p{color:var(--navy);font-size:1.04rem;font-weight:700;line-height:1.5;margin:0}
+.subs p+p{margin-top:.2em}
+
+/* ---- 流れを示す矢印 ---- */
+.arw{margin:.1em 0;color:var(--gold);font-size:.95rem;line-height:1;
+  text-align:left;padding-left:.2em}
+
+/* ---- 原本で大きく組まれている発言 ---- */
+/* 帯の中は語の途中で折り返さない。auto-phrase は文節単位で改行位置を決める
+   （非対応ブラウザでは通常の日本語改行に戻るだけ） */
+.hit{background:var(--navy);color:#fff;font-weight:700;padding:1em 1.25em;
+  margin:1.3em 0;text-align:center;border-left:7px solid var(--gold);
+  font-size:1.06rem;line-height:1.3;
+  word-break:auto-phrase;overflow-wrap:break-word;text-wrap:pretty}
+.hit span{display:block}
+.hit span.a{color:var(--gold-l);font-weight:400;font-size:.85rem;line-height:1.1;margin:.15em 0}
+
+.endmark{text-align:center;padding:60px 0 6px}
+.endmark .m{color:var(--gold-d);font-size:1.3rem;font-weight:700;letter-spacing:.1em;margin:0}
+.endmark .c{color:var(--navy);font-size:1.02rem;font-weight:700;margin:.5em 0 0}
+.endmark .s{color:var(--muted);font-size:.8rem;margin:.7em 0 0}
+
+/* ============ オーバーレイ目次 ============ */
+#tocpanel{position:fixed;inset:0;z-index:70;background:#fff;overflow-y:auto;
+  -webkit-overflow-scrolling:touch;transform:translateY(100%);transition:transform .26s ease;
+  visibility:hidden;padding:calc(16px + var(--safeT)) max(16px,4vw) calc(40px + var(--safeB))}
+#tocpanel.open{transform:translateY(0);visibility:visible}
+#tocpanel .hd{display:flex;align-items:center;justify-content:space-between;gap:14px;
+  padding-bottom:12px;border-bottom:3px solid var(--navy);margin-bottom:6px}
+#tocpanel .hd p{margin:0;color:var(--navy);font-size:1.35rem;font-weight:700;line-height:1.3}
+#tocpanel .hd small{display:block;color:var(--gold-d);font-size:.6rem;letter-spacing:.26em;
+  font-weight:700;margin-bottom:3px}
+#tocpanel .close{border:0;background:var(--mist);color:var(--navy);width:46px;height:46px;
+  border-radius:23px;font-size:1.25rem;cursor:pointer;flex:none;
+  -webkit-tap-highlight-color:transparent}
+#tocpanel .toc a{padding:14px 2px;min-height:56px;grid-template-columns:32px 1fr}
+#tocpanel .toc .n{font-size:.8rem}
+#tocpanel .toc .t{font-size:.95rem}
+#tocpanel .toc .e{font-size:.66rem}
+
+.topbtn{position:fixed;z-index:50;right:16px;bottom:calc(16px + var(--safeB));
+  width:46px;height:46px;border:0;border-radius:23px;background:#fff;color:var(--navy);
+  font-size:1.05rem;cursor:pointer;box-shadow:0 4px 16px #0b1f4b2e;opacity:0;
+  pointer-events:none;transition:opacity .2s;-webkit-tap-highlight-color:transparent}
+.topbtn.on{opacity:1;pointer-events:auto}
+
+/* ============ 画面幅 ============ */
+@media(max-width:1150px){
+  .layout{grid-template-columns:228px minmax(0,1fr);gap:32px;padding:48px 20px 90px}
+  main{padding:12px 36px 66px}
+  nav.side{padding:20px 15px}
+}
+@media(max-width:1000px){
+  .layout{display:block;padding:0;max-width:none}
+  main{padding:0 20px 76px;box-shadow:none}
+  nav.side{display:none}
+  section{padding:36px 0 28px}
+  .part{padding:30px 0 4px}
+  p{text-align:left}
+  h1{font-size:1.35rem;margin-bottom:20px}
+  .statement{padding:1em 1.05em;font-size:.99rem;text-align:left}
+  .pull{font-size:.99rem}
+}
+@media(max-width:360px){
+  main{padding:0 14px 76px}
+  .topbar{gap:8px}
+  .topbar .now{display:none}
+  .tocbtn{padding:0 12px}
+}
+@media(hover:none){.tocbtn:hover,.printbtn:hover{background:transparent}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}#tocpanel{transition:none}}
+
+/* ============ 印刷（ブラウザのPRINTボタン用の簡易指定） ============ */
+@media print{
+  @page{size:A4;margin:18mm}
+  body{background:#fff;padding-top:0;font-size:10pt}
+  .topbar,.topbtn,#tocpanel,.printbtn,.cover .scroll,nav.side{display:none!important}
+  .cover{min-height:0;break-after:page;padding:0;background:#fff;display:block}
+  .coverart{max-width:100%;max-height:none;width:100%;box-shadow:none}
+  .layout{display:block;max-width:none;padding:0}
+  main{padding:0;box-shadow:none}
+  section{padding:8mm 0 6mm;break-inside:auto}
+  .part{break-before:page}
+  h1,.hit,.cue,.partbox,.glabel{break-inside:avoid}
+  h1{break-after:avoid}
+  .cover,.hit,.cue,.partbox,.glabel{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+
+.say{line-height:1.85;margin-bottom:1em;text-align:left}
+.book-h2{margin:2.8em 0 1em;padding:14px 18px;border-left:5px solid var(--gold);background:var(--mist);color:var(--navy);font-size:1.25rem;line-height:1.6;scroll-margin-top:90px}
+.book-h3{margin:2em 0 .85em;padding-left:.8em;border-left:2px solid var(--gold);color:var(--navy);font-size:1.03rem;line-height:1.7}
+.book-list{margin:.8em 0 1.4em;padding-left:1.5em;line-height:1.85;font-size:1rem}.book-list li{margin:.25em 0}
+.checklist{padding:.5em .75em;border-bottom:1px solid var(--line);background:var(--mist)}
+.score-table{width:100%;border-collapse:collapse;margin:2em 0;font-size:.9rem;line-height:1.8}.score-table caption{font-weight:700;color:var(--navy);padding:12px}.score-table th,.score-table td{padding:10px;border:1px solid var(--line);text-align:left}.score-table thead{background:var(--navy);color:#fff}
+@media(max-width:600px){.topbar .home{font-size:.65rem;letter-spacing:.03em}.topbar .now{display:none}.tocbtn{margin-left:auto}.book-h2{font-size:1.12rem;padding:12px}.book-h3{font-size:1rem}.say,.book-list{font-size:1rem;line-height:1.9}}
+@media print{.book-h2,.book-h3{break-after:avoid}.say{font-size:10pt;line-height:1.7}.book-list{font-size:10pt}.checklist{break-inside:avoid}}
+
+</style>
+</head>
+
+<body id="top">
+
+<header class="topbar">
+  <a class="home" href="#top">人生100年時代の教科書</a>
+  <p class="now"><b id="now-no"></b><span id="now-ttl">正解は、もう用意されていない。</span></p>
+  <button class="tocbtn" id="tocbtn" type="button"
+          aria-controls="tocpanel" aria-expanded="false">
+    <span class="bars" aria-hidden="true">&#9776;</span>目次</button>
+  <span class="prog" id="prog"></span>
+</header>
+
+<section class="cover" id="cover" aria-label="表紙">
+  <img class="coverart" src="data:image/jpeg;base64,{{COVER}}" width="1032" height="1457" fetchpriority="high" alt="人生100年時代の教科書 正式表紙 大橋孝行 著">
+  <button class="printbtn" type="button" onclick="window.print()">PRINT / PDF</button>
+  <p class="scroll">SCROLL</p>
+</section>
+
+<div class="layout">
+<nav class="side" aria-label="目次">
+  <h2>CONTENTS</h2>
+  <div class="toc" id="toc-side"></div>
+</nav>
+
+<main>
+{{BODY}}
+</main>
+</div>
+
+<button class="topbtn" id="topbtn" type="button" aria-label="ページ先頭へ">&#8593;</button>
+
+<div id="tocpanel" role="dialog" aria-modal="true" aria-label="目次" aria-hidden="true">
+  <div class="hd">
+    <p><small>CONTENTS</small>目次</p>
+    <button class="close" id="tocclose" type="button" aria-label="目次を閉じる">&#215;</button>
+  </div>
+  <div class="toc" id="toc-panel"></div>
+</div>
+
+<script>
+window.__CH__ = {{TOC}};
+</script>
+<script>
+(function () {
+  "use strict";
+  var CH = window.__CH__;
+
+  /* ---- 目次を組み立てる（側面固定 / オーバーレイの2箇所へ） ---- */
+  function build(el) {
+    var h = "";
+    CH.forEach(function (c) {
+      if (c.grp) h += '<span class="grp">' + c.grp + '</span>';
+      h += '<a href="#' + c.id + '" data-id="' + c.id + '">' +
+           '<span class="n">' + c.no + '</span>' +
+           '<span class="t">' + c.title +
+           '<span class="e">' + c.eyebrow + '</span></span></a>';
+    });
+    el.innerHTML = h;
+  }
+  var side = document.getElementById("toc-side");
+  var panelToc = document.getElementById("toc-panel");
+  if (side) build(side);
+  build(panelToc);
+
+  /* ---- オーバーレイ目次の開閉（iOS のスクロール飛びを防ぐ） ---- */
+  var box = document.getElementById("tocpanel"),
+      btn = document.getElementById("tocbtn"),
+      cls = document.getElementById("tocclose"),
+      topb = document.getElementById("topbtn"),
+      lockY = 0;
+
+  function open() {
+    lockY = window.scrollY || window.pageYOffset;
+    document.body.style.position = "fixed";
+    document.body.style.top = -lockY + "px";
+    document.body.style.left = "0";
+    document.body.style.right = "0";
+    box.classList.add("open");
+    box.setAttribute("aria-hidden", "false");
+    btn.setAttribute("aria-expanded", "true");
+    cls.focus();
+  }
+  function close() {
+    box.classList.remove("open");
+    box.setAttribute("aria-hidden", "true");
+    btn.setAttribute("aria-expanded", "false");
+    document.body.style.position = "";
+    document.body.style.top = "";
+    document.body.style.left = "";
+    document.body.style.right = "";
+    window.scrollTo(0, lockY);
+  }
+  btn.addEventListener("click", open);
+  cls.addEventListener("click", close);
+
+  /* パネル内リンク：先に閉じてから、復元位置に邪魔されずに移動する */
+  panelToc.addEventListener("click", function (e) {
+    var a = e.target.closest("a");
+    if (!a) return;
+    e.preventDefault();
+    var id = a.dataset.id;
+    close();
+    var el = document.getElementById(id);
+    if (el) {
+      setTimeout(function () {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+        history.replaceState(null, "", "#" + id);
+      }, 0);
+    }
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && box.classList.contains("open")) close();
+  });
+
+  topb.addEventListener("click", function () {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  /* ---- 読了バー・トップへ戻るボタン ---- */
+  var prog = document.getElementById("prog");
+  function onScroll() {
+    var y = window.scrollY || window.pageYOffset;
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    prog.style.width = (h > 0 ? Math.min(100, (y / h) * 100) : 0) + "%";
+    topb.classList.toggle("on", y > 700);
+  }
+  addEventListener("scroll", onScroll, { passive: true });
+  addEventListener("resize", onScroll, { passive: true });
+  onScroll();
+
+  /* ---- 現在地（上部バーの表示と目次のハイライト） ---- */
+  var links = document.querySelectorAll(".toc a");
+  var nowNo = document.getElementById("now-no");
+  var nowTtl = document.getElementById("now-ttl");
+  var byId = {};
+  CH.forEach(function (c) { byId[c.id] = c; });
+
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        var c = byId[en.target.id];
+        if (!c) return;
+        links.forEach(function (a) {
+          a.setAttribute("aria-current", a.dataset.id === en.target.id ? "true" : "false");
+        });
+        nowNo.textContent = c.no;
+        nowTtl.textContent = c.title;
+      });
+    }, { rootMargin: "-18% 0px -72% 0px" });
+    document.querySelectorAll("main section:not(.part)").forEach(function (s) { io.observe(s); });
+  }
+})();
+</script>
+</body></html>
+
